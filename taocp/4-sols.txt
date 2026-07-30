@@ -108,3 +108,100 @@ because after rounding there might be additional shifts (e.g. if
 .99... rounds up to 1.00...). Nevertheless, the final result depends
 only on the (p+k) places after the rounding, which we have shown to be
 the same with fv or gv.
+
+
+
+
+
+Simpler proofs of Theorems 4.3.1A and B ---------------------
+
+Theorem A
+---------
+For simplicity, I'll work in base 10. Then q is maximised in the case
+
+(un u(n-1) 9 ... 9)  /  (v(n-1) 0 ... 0),
+
+but then q cannot be >= q'+1 because
+
+ (v(n-1) 0 ... 0) * (q'+1)
+
+           =
+
+  <----- 2 places ----->
+  [> un u(n-1) - v(n-1)] 0 ... 0
++                v(n-1)  0 ... 0
+
+           >
+
+  [  un u(n-1) - v(n-1)] 9 ... 9
++                v(n-1)  0 ... 0
+
+           =
+
+   un u(n-1) 9 ... 9.
+
+
+Theorem B
+---------
+q is minimised in the case
+
+un u(n-1) 0 ... 0  /  v(n-1) 9 ... 9.
+
+Now we evaluate the product
+
+  (v(n-1) 9 ... 9) * (q'-2)
+
+             =
+
+([v(n-1) + 1] 0 ... 0  -  1) * (q'-2)
+
+             =
+
+  [ <= un u(n-1) + q' ] 0 ... 0
+- [   2 * v(n-1) + 2  ] 0 ... 0
+-                     (q' - 2)
+
+If q'=1, then this is equal to
+
+  [ <= un u(n-1) - 2 * v(n-1) - 1 ] 0 ... 1
+
+which is less than the dividend (un u(n-1) 0 ... 0), regardless of
+v(n-1).
+
+If q'>=2, then this is less than
+
+  [ <= un u(n-1) + q' - 2 * v(n-1) - 2 ] 0 ... 0,
+
+which is less than the dividend as long as
+
+  un u(n-1) + q' - 2 * v(n-1) - 2  <=  un u(n-1),
+
+i.e.
+
+  v(n-1) + 1 >= q'/2,
+
+and this is true as long as
+
+  v(n-1) >= floor(b/2).
+
+
+Therefore, q >= q'-2.
+
+
+
+
+
+4.3.1-10 ---------------------
+
+The original Program S computes ((1+k) + uj - vj + (b-1)) from left to
+right. A borrow occurs iff there is no overflow in the last operation:
+
+... + (b-1) overflows   <=>   (1+k) + uj - vj >= 1   <=>  uj - vj + k >= 0.
+
+Swapping lines 6,7 is invalid, because (1+k) + uj + (b-1) is
+nonnegative (regardless whether it overflows), so subtracting vj never
+overflows.
+
+Swapping lines 5,6 is valid because
+
+... + (b-1) overflows   <=>   (1+k) - vj + uj >= 1   <=>  -vj + uj + k >= 0.
